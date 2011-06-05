@@ -76,17 +76,17 @@ class TinyChimp {
 		
 		$this->_connection = curl_init();
 		curl_setopt_array($this->_connection, array(
-			CURLOPT_RETURNTRANSFER	=> true,
-			CURLOPT_TIMEOUT			=> $this->timeout,
-			CURLOPT_POST			=> true
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_TIMEOUT        => $this->timeout,
+			CURLOPT_POST           => true
 		));
 		
 		if ($this->secure_connection)
 		{
 			curl_setopt_array($this->_connection, array(
-				CURLOPT_SSL_VERIFYPEER	=> false,
-				CURLOPT_SSL_VERIFYHOST	=> true,
-				CURLOPT_PORT			=> 443
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_SSL_VERIFYHOST => true,
+				CURLOPT_PORT           => 443
 			));
 		}
 	}
@@ -135,8 +135,8 @@ class TinyChimp {
 		$params = array_merge($default_params, $extra_params);
 		
 		curl_setopt_array($this->_connection, array(
-			CURLOPT_URL 		=> $this->api_url.$method,
-			CURLOPT_POSTFIELDS	=> $params
+			CURLOPT_URL        => $this->api_url.$method,
+			CURLOPT_POSTFIELDS => $params
 		));
 		
 		$response = json_decode(curl_exec($this->_connection));
