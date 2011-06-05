@@ -4,7 +4,6 @@
  * TinyChimp is a lightweight API wrapper for interacting
  * with MailChimp for the Fuel PHP framework
  * 
- *
  * @package		Fuel
  * @author		Max Zender <maxzender@gmail.com>
  * @link		http://github.com/maxzender/fuel-tinychimp
@@ -77,9 +76,9 @@ class TinyChimp {
 		
 		$this->_connection = curl_init();
 		curl_setopt_array($this->_connection, array(
-			CURLOPT_RETURNTRANSFER 	=> true,
+			CURLOPT_RETURNTRANSFER	=> true,
 			CURLOPT_TIMEOUT			=> $this->timeout,
-			CURLOPT_POST 			=> true
+			CURLOPT_POST			=> true
 		));
 		
 		if ($this->secure_connection)
@@ -87,7 +86,7 @@ class TinyChimp {
 			curl_setopt_array($this->_connection, array(
 				CURLOPT_SSL_VERIFYPEER	=> false,
 				CURLOPT_SSL_VERIFYHOST	=> true,
-				CURLOPT_PORT 			=> 443
+				CURLOPT_PORT			=> 443
 			));
 		}
 	}
@@ -124,7 +123,7 @@ class TinyChimp {
 	{
 		if (strpos($method, '_'))
 		{
-				// underscore method has been used, make it CamelCase
+			// underscore method has been used, make it CamelCase
 			$method = lcfirst(\Inflector::camelize($method));
 		}
 
@@ -133,7 +132,6 @@ class TinyChimp {
 		);
 		
 		$extra_params = (empty($arguments)) ? $arguments : array_shift($arguments);
-			// do a merge here in case a different API key has been passed
 		$params = array_merge($default_params, $extra_params);
 		
 		curl_setopt_array($this->_connection, array(
