@@ -17,78 +17,62 @@ class TinyChimp {
 	/**
 	 * @var string The secret API key
 	 */
-	protected $api_key = '';
+	protected static $api_key = '';
 	
 	/**
 	 * @var bool Whether or not to use a secure connection
 	 */
-	protected $secure_connection = null;
+	protected static $secure_connection = null;
 	
 	/**
 	 * @var string The API Url to be used for connection
 	 */
-	protected $api_url = '';
+	protected static $api_url = '';
 	
 	/**
 	 * @var int Timeout in seconds, set to 0 for infinite
 	 */
-	protected $timeout = null;
+	protected static $timeout = null;
 	
 	/**
 	 * @var resource The curl handle
 	 */
-	private $_connection = null;
+	private static $_connection = null;
 	
 	/**
-	 * Create a new instance of the API wrapper
-	 *
-	 * @param array $config
-	 * @return object TinyChimp
-	 */
-	public function factory($config = array())
+	 * Static constructor called by autoloader
+	 */	
+	public static function _init()
 	{
-		$default_config = \Config::load('tinychimp');
+		$config = \Config::load('tinychimp');
 		
-		if (is_array($default_config) and is_array($config))
-		{
-			$config = array_merge($default_config, $config);
-		}
-		
-		return new self($config);
-	}
-	
-	/**
-	 * Constructor method
-	 *
-	 * @param array $config
-	 */
-	public function __construct($config)
-	{
 		if (empty($config['api_key']))
 		{
 			throw new \Fuel_Exception('API key not specified.');
 		}
 	
-		$this->api_key = $config['api_key'];
-		$this->secure_connection = (is_bool($config['secure'])) ? $config['secure'] : false;
-		$this->timeout = (is_integer($config['timeout'])) ? $config['timeout'] : 300;
-		$this->api_url = (empty($config['api_url'])) ? $this->get_api_url() : $config['api_url'];
+		static::$api_key = $config['api_key'];
+		static::$secure_connection = (is_bool($config['secure'])) ? $config['secure'] : false;
+		static::$timeout = (is_integer($config['timeout'])) ? $config['timeout'] : 300;
+		static::$api_url = (empty($config['api_url'])) ? static::get_api_url() : $config['api_url'];
 		
-		$this->_connection = curl_init();
-		curl_setopt_array($this->_connection, array(
+		$connection = curl_init();
+		curl_setopt_array($connection, array(
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_TIMEOUT        => $this->timeout,
+			CURLOPT_TIMEOUT        => static::$timeout,
 			CURLOPT_POST           => true
 		));
 		
-		if ($this->secure_connection)
+		if (static::$secure_connection)
 		{
-			curl_setopt_array($this->_connection, array(
+			curl_setopt_array($connection, array(
 				CURLOPT_SSL_VERIFYPEER => false,
 				CURLOPT_SSL_VERIFYHOST => true,
 				CURLOPT_PORT           => 443
 			));
 		}
+		
+		static::$_connection = $connection;
 	}
 	
 	/**
@@ -96,16 +80,16 @@ class TinyChimp {
 	 *
 	 * @return string $api_url The valid API Url
 	 */
-	public function get_api_url()
+	public static function get_api_url()
 	{
-		$api_key = explode('-', $this->api_key);
+		$api_key = explode('-', static::$api_key);
 		if (sizeof($api_key) < 2)
 		{
 			throw new \Fuel_Exception('Invalid API key.');
 		}
 		$server = end($api_key);
 		
-		$api_url  = ($this->secure_connection) ? 'https://' : 'http://';
+		$api_url  = (static::$secure_connection) ? 'https://' : 'http://';
 		$api_url .= $server.'.api.mailchimp.com/1.3/?method=';
 		
 		return $api_url;
@@ -119,41 +103,33 @@ class TinyChimp {
 	 * @throws Exception
 	 * @return object The response object
 	 */
-	public function __call($method, $arguments = array())
+	public static function __callStatic($method, $arguments = array())
 	{
 		if (strpos($method, '_'))
 		{
 			// underscore method has been used, make it CamelCase
-			$method = lcfirst(\Inflector::camelize($method));
+			$method = \Str::lcfirst(\Inflector::camelize($method));
 		}
 
 		$default_params = array(
-			'apikey' => $this->api_key
+			'apikey' => static::$api_key
 		);
 		
 		$extra_params = (empty($arguments)) ? $arguments : array_shift($arguments);
 		$params = array_merge($default_params, $extra_params);
 		
-		curl_setopt_array($this->_connection, array(
-			CURLOPT_URL        => $this->api_url.$method,
+		curl_setopt_array(static::$_connection, array(
+			CURLOPT_URL        => static::$api_url.$method,
 			CURLOPT_POSTFIELDS => $params
 		));
 		
-		$response = json_decode(curl_exec($this->_connection));
+		$response = json_decode(curl_exec(static::$_connection));
 		if (@$response->error)
 		{
 			throw new \Fuel_Exception('Error #'.$response->code.': '.$response->error);
 		}
 
 		return $response;
-	}
-	
-	/**
-	 * Destructor method
-	 */
-	public function __destruct()
-	{
-		curl_close($this->_connection);
 	}
 	
 }
