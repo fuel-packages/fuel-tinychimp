@@ -23,19 +23,11 @@ In order to run TinyChimp for Fuel, you'll need:
 
 ##Usage
 
-In your controller:
+You can use the API methods [documented here](http://apidocs.mailchimp.com/1.3/) right off like this:
 
-	$tinychimp = TinyChimp::factory();
-
-Now you can use the API methods [documented here](http://apidocs.mailchimp.com/1.3/) like this:
-
-	$tinychimp->lists();
+	TinyChimp::lists(array('start' => 0, 'limit' => 50));
 	
-To pass arguments to the API, do the following:
-
-	$tinychimp->lists(array('start' => 0, 'limit' => 50));
-	
-Or if there are a lot of them:
+Or if there are a lot of arguments to pass:
 
 	$params = array(
 		'id'			=> 'abcd1234',
@@ -44,13 +36,13 @@ Or if there are a lot of them:
 		'send_welcome'	=> true
 	);
 	
-	$tinychimp->listSubscribe($params);
+	TinyChimp::listSubscribe($params);
 	
 The order in which the arguments are passed is completely arbitrary.
 	
 Also, if you don't like CamelCase you can alternatively call any method with underscores instead. So the example above equals the following:
 
-	$tinchimp->list_subscribe($params);
+	TinyChimp::list_subscribe($params);
 	
 ##License
 
