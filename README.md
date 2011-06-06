@@ -23,7 +23,7 @@ In order to run TinyChimp for Fuel, you'll need:
 
 ##Usage
 
-You can use the API methods [documented here](http://apidocs.mailchimp.com/1.3/) right off like this:
+You can use the API methods [documented here](http://apidocs.mailchimp.com/1.3/) right off your controller like this:
 
 	TinyChimp::lists(array('start' => 0, 'limit' => 50));
 	
