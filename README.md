@@ -1,6 +1,6 @@
 #TinyChimp for Fuel
 
-Version: 1.0 Beta
+Version: 1.0
 
 A lightweight API wrapper for interacting with the [MailChimp API 1.3](http://apidocs.mailchimp.com/1.3/) for the [Fuel PHP](http://fuelphp.com/) framework.
 
