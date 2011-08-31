@@ -14,6 +14,14 @@ In order to run TinyChimp for Fuel, you'll need:
 
 ##Installation
 
+**Via the Oil utility:**
+
+Type this in your terminal:
+
+`php oil package install tinychimp`
+
+**Without the Oil utility:**
+
 1. Move this folder to fuel/packages/
 2. Enable the package in your config:
 	`'packages' => array(
