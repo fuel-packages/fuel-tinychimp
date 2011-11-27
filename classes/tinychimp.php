@@ -120,7 +120,7 @@ class TinyChimp {
 		
 		curl_setopt_array(static::$_connection, array(
 			CURLOPT_URL        => static::$api_url.$method,
-			CURLOPT_POSTFIELDS => $params
+			CURLOPT_POSTFIELDS => http_build_query($params)
 		));
 		
 		$response = json_decode(curl_exec(static::$_connection));
