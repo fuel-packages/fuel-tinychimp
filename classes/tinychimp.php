@@ -48,7 +48,7 @@ class TinyChimp {
 		
 		if (empty($config['api_key']))
 		{
-			throw new \Fuel_Exception('API key not specified.');
+			throw new \FuelException('API key not specified.');
 		}
 	
 		static::$api_key = $config['api_key'];
@@ -85,7 +85,7 @@ class TinyChimp {
 		$api_key = explode('-', static::$api_key);
 		if (sizeof($api_key) < 2)
 		{
-			throw new \Fuel_Exception('Invalid API key.');
+			throw new \FuelException('Invalid API key.');
 		}
 		$server = end($api_key);
 		
@@ -126,7 +126,7 @@ class TinyChimp {
 		$response = json_decode(curl_exec(static::$_connection));
 		if (@$response->error)
 		{
-			throw new \Fuel_Exception('Error #'.$response->code.': '.$response->error);
+			throw new \FuelException('Error #'.$response->code.': '.$response->error);
 		}
 
 		return $response;
